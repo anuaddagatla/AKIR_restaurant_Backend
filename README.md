@@ -1,96 +1,71 @@
-# AKIR Restaurant Backend
+# 🍽️ AKIR Restaurant – Backend API
 
+## 🚀 Overview
+This is the backend API for the **AKIR Restaurant Website**.
 
-Backend API for the AKIR Restaurant website.
-
----
-
-## Features
-
-* Reservation system with email confirmations
-* Contact form with auto-reply to customers
-* Email integration (Nodemailer with multiple fallbacks)
-* CORS support for frontend communication
-* Health check endpoint
+It handles reservations, contact form submissions, and email notifications using a robust and fault-tolerant system.
 
 ---
 
-## Setup
+## ✨ Features
 
-### 1. Install Dependencies
+- 📅 Reservation system with email notifications
+- 📩 Contact form handling
+- 📧 Email integration (Brevo / SMTP fallback)
+- 🔁 Retry mechanism for failed email requests
+- 🌐 CORS support for frontend communication
+- ❤️ Health check endpoint
+- 🛡️ Input validation & rate limiting
+
+---
+
+## 🛠️ Tech Stack
+
+- Node.js
+- Express.js
+- Axios
+- Brevo API (Email service)
+- dotenv
+
+---
+
+## 📦 Installation & Setup
 
 ```bash
-cd backend
+# Navigate to backend folder
+cd Web_Restaurant_backend
+
+# Install dependencies
 npm install
-```
 
-### 2. Environment Variables
+# Start server
+node server.js
+⚙️ Environment Variables
 
-Create a `.env` file in the backend directory:
+Create a .env file:
 
-```env
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-RESTAURANT_EMAIL=akirrestaurants@gmail.com
 PORT=4000
-```
 
-### 3. Start Server
+# Brevo Email API
+BREVO_API_KEY=your_brevo_api_key
 
-```bash
-npm start
-```
+# Email settings
+MAIL_FROM=AKIR Restaurant <akirrestaurants@gmail.com>
+MAIL_TO=akirrestaurants@gmail.com
 
----
-=======
-This is the backend API for the AKIR Restaurant website.
+# CORS
+CORS_ORIGINS=http://localhost:5175,https://akir-restaurant.vercel.app
+🌐 API Endpoints
+❤️ Health Check
+GET /health
 
-## Features
+Returns server status.
 
-- **Reservation System**: Handle table reservations with email notifications
-- **Contact Form**: Process customer inquiries and feedback
-- **Email Integration**: Send automated emails using Nodemailer
-- **CORS Support**: Configured for frontend communication
-- **Health Check**: Monitor backend status
+📅 Reservations
+POST /api/reservations
 
-## Setup
+Body:
 
-1. **Install Dependencies**
-   ```bash
-   cd backend
-   npm install
-   ```
-
-2. **Environment Configuration** (Optional)
-   Create a `.env` file in the backend directory:
-   ```env
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
-   RESTAURANT_EMAIL=restaurant@akir.com
-   PORT=3001
-   ```
-
-3. **Start the Server**
-   ```bash
-   npm start
-   ```
-
-## API Endpoints
-
-### Health Check
-
-* **GET** `/health`
-* Returns server status and timestamp
-
----
-
-### Reservations
-
-* **POST** `/api/reservations`
-
-**Body:**
-
-```json
 {
   "name": "",
   "email": "",
@@ -100,113 +75,70 @@ This is the backend API for the AKIR Restaurant website.
   "guests": "",
   "specialRequests": ""
 }
-```
 
-✔ Sends confirmation emails to:
+✔ Sends email to:
 
-* Restaurant
-* Customer
+Restaurant
+Customer (if successful)
+📩 Contact Form
+POST /api/contact
 
----
+Body:
 
-### Contact Form
-
-* **POST** `/api/contact`
-
-**Body:**
-
-```json
 {
   "name": "",
   "email": "",
   "subject": "",
   "message": ""
 }
-```
 
-✔ Sends:
+✔ Sends email to:
 
-* Message to restaurant
-* Auto-reply to customer
+Restaurant
+📧 Email System
+Uses Brevo API (recommended)
+Includes retry logic for network failures
+Handles errors like:
+ECONNRESET
+ETIMEDOUT
+Prevents full request failure when possible
+🧪 Development
+Default Port: 4000
 
----
+Supports local frontend:
 
-## Email System
+http://localhost:5175
+Logging enabled for debugging
+🚀 Deployment
 
-Supports multiple fallbacks:
+Recommended platforms:
 
-* SMTP (Gmail / custom provider)
-* sendmail (if available)
-* Ethereal (for development testing)
+Render
+Railway
+Fly.io
+Steps:
+Deploy backend
+Set environment variables
+Update frontend .env:
 
----
+VITE_API_URL=https://your-backend-url.com
 
-## Development
+⚠️ Important Notes
+Backend must be running for:
+Reservation form
+Contact form
+Emails may land in Spam/Promotions
+Rotate API keys if exposed
+Avoid exposing .env in GitHub
 
-* **Port**: 4000
-* **CORS**: configured for `http://localhost:5175` and production frontend URL
-* **Logging**: enabled for requests and errors
+## 📩 Contact
 
----
+**Author**: A Anusha 
+📧 **Email**: [anu.addagatla18@gmail.com](mailto:anu.addagatla18@gmail.com)
 
-## Production Deployment
-
-For production:
-
-1. Set environment variables properly
-2. Configure email service (Gmail / SMTP / SendGrid)
-3. Update CORS origins
-4. Use a process manager (PM2 / Docker / hosting platform)
-5. Enable HTTPS/SSL
-
----
-
-## Notes
-
-* Ensure Gmail App Password is used (not normal password)
-* Check Spam/Promotions folder for test emails
-* Backend must be deployed separately from frontend for production
-=======
-- **GET** `/health`
-- Returns server status and timestamp
-
-### Reservations
-- **POST** `/api/reservations`
-- Body: `{ name, email, phone, date, time, guests, specialRequests }`
-- Sends confirmation emails to both restaurant and customer
-
-### Contact Form
-- **POST** `/api/contact`
-- Body: `{ name, email, subject, message }`
-- Sends inquiry email to restaurant
-
-## Email Configuration
-
-To enable email notifications:
-
-1. **Gmail Setup**:
-   - Enable 2-factor authentication
-   - Generate an App Password
-   - Use your Gmail address and App Password in `.env`
-
-2. **Other Providers**:
-   - Update the transporter configuration in `server.js`
-   - Modify SMTP settings as needed
-
-## Development
-
-- **Port**: 3001 (configurable via PORT env variable)
-- **CORS**: Configured for localhost:3000, localhost:5173, localhost:5174
-- **Logging**: All requests and errors are logged to console
-
-## Production Deployment
-
-For production deployment:
-
-1. Set up proper environment variables
-2. Configure email service (Gmail, SendGrid, etc.)
-3. Set up proper CORS origins
-4. Use a process manager like PM2
-5. Set up SSL/HTTPS
-
-# Web_Restaurant_backend
+📌 Future Improvements
+Database integration (store reservations)
+Admin dashboard
+Email templates improvement
+Rate limiting per user/IP
+Logging & monitoring (Winston / Logtail)
